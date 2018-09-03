@@ -11,7 +11,7 @@ import (
 
 // -------------------------------------------------------------------------
 // explosive.go
-// - Original idea: "github.com/faiface/pixel/examples/community/bouncing"
+// - Original idea: "github.com/faiface/pixel-examples/community/bouncing"
 
 // --------------------------------------------------------------------
 

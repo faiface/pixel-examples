@@ -11,7 +11,7 @@ import (
 
 // -------------------------------------------------------------------------
 // Reusable modified starfiled
-// - Original: "github.com/faiface/pixel/examples/community/starfield"
+// - Original: "github.com/faiface/pixel-examples/community/starfield"
 // - Encapsulated by nanitefactory
 
 // -------------------------------------------------------------------------

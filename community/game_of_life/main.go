@@ -8,7 +8,7 @@ import (
 	"golang.org/x/image/colornames"
 
 	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/examples/community/game_of_life/life"
+	"github.com/faiface/pixel-examples/community/game_of_life/life"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
 )

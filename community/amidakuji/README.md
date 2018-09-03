@@ -40,12 +40,12 @@
 #### Windows
 
 ```
-$ go get -v github.com/faiface/pixel/examples/community/amidakuji/...
+$ go get -v github.com/faiface/pixel-examples/community/amidakuji/...
 $ go get -v -u github.com/go-bindata/go-bindata/...
 ```
 
 ```
-$ cd $GOPATH/src/github.com/faiface/pixel/examples/community/amidakuji/
+$ cd $GOPATH/src/github.com/faiface/pixel-examples/community/amidakuji/
 $ make
 ```
 
@@ -62,12 +62,12 @@ $ sudo apt install libglib2.0-dev libpango1.0-dev libasound2-dev libgdk-pixbuf2.
 ```
 
 ```
-$ go get -v github.com/faiface/pixel/examples/community/amidakuji/...
+$ go get -v github.com/faiface/pixel-examples/community/amidakuji/...
 $ go get -v -u github.com/go-bindata/go-bindata/...
 ```
 
 ```
-$ cd $GOPATH/src/github.com/faiface/pixel/examples/community/amidakuji/
+$ cd $GOPATH/src/github.com/faiface/pixel-examples/community/amidakuji/
 $ make
 ```
 

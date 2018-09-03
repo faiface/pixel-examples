@@ -15,8 +15,8 @@ import (
 	"time"
 	"unsafe"
 
-	gg "github.com/faiface/pixel/examples/community/amidakuji/glossary"
-	"github.com/faiface/pixel/examples/community/amidakuji/glossary/jukebox"
+	gg "github.com/faiface/pixel-examples/community/amidakuji/glossary"
+	"github.com/faiface/pixel-examples/community/amidakuji/glossary/jukebox"
 	glfw "github.com/go-gl/glfw/v3.2/glfw"
 
 	"github.com/faiface/pixel"

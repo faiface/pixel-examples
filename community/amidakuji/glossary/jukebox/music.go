@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	gg "github.com/faiface/pixel/examples/community/amidakuji/glossary"
+	gg "github.com/faiface/pixel-examples/community/amidakuji/glossary"
 
 	"github.com/faiface/beep"
 	"github.com/faiface/beep/speaker"
