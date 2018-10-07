@@ -32,7 +32,7 @@ var uMouse mgl32.Vec4
 
 And finally, to make our variables available in the shader itself we use:
 ```
-canvas.SetUniform(Name string, Value interface{})
+canvas.SetUniform(name string, value interface{})
 ```
 
 We create a handy function to do this:
