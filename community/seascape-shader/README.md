@@ -111,8 +111,10 @@ where fragSource is the fragment shader, not a path fo a file.
 ## Result converting shadertoy shader to use with Pixel
 
 Here is a diff of the changes:
+
 ![seascape animation](shader_diffs.png "Seascape animation")
 
 
 And that is it. Running the program we should see this:
+
 ![seascape animation](seascape.gif "Seascape animation")
