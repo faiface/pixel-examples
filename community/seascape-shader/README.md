@@ -1,8 +1,8 @@
 # Shadertoy to Pixel shader conversion
 
-This will show you an example how you can take an example from shadertoy.com and use it with the Pixel Shader support.
+This will show you an example how you can take an example from [shadertoy.com](shadertoy.com) and use it with the Pixel Shader support.
 
-"Seascape" by Alexander Alekseev aka TDM - 2014 is a nice one. It's very impressive and doesn't use textures so that simplifies things for us. Let's try that one.
+["Seascape" by Alexander Alekseev aka TDM - 2014](https://www.shadertoy.com/view/Ms2SD1) is a nice one. It's very impressive and doesn't use textures so that simplifies things for us. Let's try that one.
 
 Looking at the seascape.glsl example you can see **iResolution**, **iTime** and **iMouse** in there.
 
