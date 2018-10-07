@@ -4,14 +4,18 @@
  * Contact: tdmaav@gmail.com
  */
 
-uniform vec2 u_resolution;
-uniform float u_time;
-uniform vec4 u_mouse;
+#version 330 core
+
+uniform vec2 uResolution;
+uniform float uTime;
+uniform vec4 uMouse;
+
+out vec4 fragColor;
 
 const int NUM_STEPS = 8;
 const float PI	 	= 3.141592;
 const float EPSILON	= 1e-3;
-#define EPSILON_NRM (0.1 / u_resolution.x)
+#define EPSILON_NRM (0.1 / uResolution.x)
 
 // sea
 const int ITER_GEOMETRY = 3;
@@ -22,7 +26,7 @@ const float SEA_SPEED = 0.8;
 const float SEA_FREQ = 0.16;
 const vec3 SEA_BASE = vec3(0.1,0.19,0.22);
 const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6);
-#define SEA_TIME (1.0 + u_time * SEA_SPEED)
+#define SEA_TIME (1.0 + uTime * SEA_SPEED)
 const mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
 
 // math
@@ -160,10 +164,10 @@ float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {
 // main
 void main()
 {
-	vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+	vec2 uv = gl_FragCoord.xy / uResolution.xy;
     uv = uv * 2.0 - 1.0;
-    uv.x *= u_resolution.x / u_resolution.y;
-    float time = u_time * 0.3 + u_mouse.x*0.01;
+    uv.x *= uResolution.x / uResolution.y;
+    float time = uTime * 0.3 + uMouse.x*0.01;
 
     // ray
     vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);
@@ -185,5 +189,5 @@ void main()
     	pow(smoothstep(0.0,-0.05,dir.y),0.3));
 
     // post
-	gl_FragColor = vec4(pow(color,vec3(0.75)), 1.0);
+	fragColor = vec4(pow(color,vec3(0.75)), 1.0);
 }

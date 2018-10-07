@@ -52,9 +52,9 @@ and we call that function like so:
 
 ``` go
 	EasyBindUniforms(canvas,
-		"u_resolution", &uResolution,
-		"u_time", &uTime,
-		"u_mouse", &uMouse,
+		"uResolution", &uResolution,
+		"uTime", &uTime,
+		"uMouse", &uMouse,
 	)
 ```
 
@@ -63,9 +63,9 @@ and we call that function like so:
 We also need to do some updates to the shader file itself to match these variables. First thing would be to add the variables we exposed in Go.
 
 ```
-uniform vec2 u_resolution;
-uniform float u_time;
-uniform vec4 u_mouse;
+uniform vec2 uResolution;
+uniform float uTime;
+uniform vec4 uMouse;
 ```
 Then we just rename the variables to match.
 
@@ -87,16 +87,20 @@ to
 ```
 gl_FragCoord
 ```
+because this is available globaly in the OpenGL space for the shader.
 
-and rename:
+We also need to add:
 ```
-fragColor
+out vec4 fragColor;
 ```
-to
+
+to expose that.
+
+Lastly, we need to add:
 ```
-gl_FragColor
+#version 330 core
 ```
-because these are available globaly in the OpenGL space for the shader.
+at the top to tell what version we require.
 
 
 ## Using shader
@@ -112,7 +116,7 @@ where fragSource is the fragment shader, not a path fo a file.
 
 Here is a diff of the changes:
 
-![seascape animation](shader_diffs.png "Seascape animation")
+![code changes](shader_diffs.png "Code changes")
 
 
 And that is it. Running the program we should see this:
