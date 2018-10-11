@@ -5,16 +5,16 @@ A few examples on how to implement custom shaders in Pixel. Please note I am not
 
 ## fast radial blurring effect
 
-![](/fastblur.gif)
+![](fastblur.gif)
 
 ## long exposure-ish effect
 
-![](/exposure.gif)
+![](exposure.gif)
 
 ## grayscale (from wiki tutorial)
 
-![](/grayscale.png)
+![](grayscale.png)
 
 ## wavy (from wiki tutorial)
 
-![](/wavy.gif)
+![](wavy.gif)
