@@ -8,3 +8,7 @@ Made by [David Linus Briemann](https://github.com/dbriemann/).
 
 ESC - Quit
 Press left mouse button - add many gophers.
+
+## Screenie
+
+![screenshot](screen.jpg)
