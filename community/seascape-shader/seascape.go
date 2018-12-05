@@ -31,6 +31,7 @@ func run() {
 	// I am putting all shader example initializing stuff here for
 	// easier reference to those learning to use this functionality
 	fragSource, err := LoadFileToString("shaders/seascape.glsl")
+	// fragSource, err := LoadFileToString("shaders/planetfall.glsl")
 	if err != nil {
 		panic(err)
 	}
