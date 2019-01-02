@@ -8,6 +8,15 @@ Looking at the seascape.glsl example you can see **iResolution**, **iTime** and 
 
 These are commonly needed to be exposed because these things are coming from outside and needs to be updated. Any other variable you need to have changed/updated from code can be exposed like those.
 
+## Command line arguments
+
+```
+./seascape-shader -h   # will show you the command line options
+
+./seascape-shader -filename ./shaders/seascape.glsl    # Seascape
+./seascape-shader -filename ./shaders/planetfall.glsl  # Planet Fall demo
+```
+
 ## Exposing variables
 
 How to expose variables like this?

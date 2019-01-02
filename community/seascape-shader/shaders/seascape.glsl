@@ -10,6 +10,9 @@ uniform vec2 uResolution;
 uniform float uTime;
 uniform vec4 uMouse;
 
+// This is how much you are drifting around. Zero means it only moves when the mouse moves
+uniform float uDrift;
+
 out vec4 fragColor;
 
 const int NUM_STEPS = 8;
@@ -167,7 +170,7 @@ void main()
 	vec2 uv = gl_FragCoord.xy / uResolution.xy;
     uv = uv * 2.0 - 1.0;
     uv.x *= uResolution.x / uResolution.y;
-    float time = uTime * 0.3 + uMouse.x*0.01;
+    float time = uTime * uDrift * 5 + uMouse.x*0.01;
 
     // ray
     vec3 ang = vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);
