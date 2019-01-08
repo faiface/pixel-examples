@@ -2,6 +2,7 @@ package main
 
 import (
 	"time"
+	"log"
 
 	"github.com/go-gl/mathgl/mgl32"
 
@@ -10,11 +11,25 @@ import (
 	"golang.org/x/image/colornames"
 )
 
+import "flag"
+import "os"
+
+var (
+	version       string
+	race          bool
+	debug         = os.Getenv("BUILDDEBUG") != ""
+	filename      string
+	width         int
+	height        int
+	timeout       = "120s"
+	uDrift        float32
+)
+
 func run() {
 	// Set up window configs
 	cfg := pixelgl.WindowConfig{ // Default: 1024 x 768
-		Title:  "Golang Seascape from Shadertoy",
-		Bounds: pixel.R(0, 0, 1024, 768),
+		Title:  "Golang GLSL",
+		Bounds: pixel.R(0, 0, float64(width), float64(height)),
 		VSync:  true,
 	}
 
@@ -30,8 +45,9 @@ func run() {
 
 	// I am putting all shader example initializing stuff here for
 	// easier reference to those learning to use this functionality
-	fragSource, err := LoadFileToString("shaders/seascape.glsl")
-	// fragSource, err := LoadFileToString("shaders/planetfall.glsl")
+
+	fragSource, err := LoadFileToString(filename)
+
 	if err != nil {
 		panic(err)
 	}
@@ -46,6 +62,7 @@ func run() {
 		"uResolution", &uResolution,
 		"uTime", &uTime,
 		"uMouse", &uMouse,
+		"uDrift", &uDrift,
 	)
 
 	canvas.SetFragmentShader(fragSource)
@@ -69,6 +86,27 @@ func run() {
 
 }
 
+func parseFlags() {
+	flag.StringVar  (&version,       "version",       "v0.1",                     "Set compiled in version string")
+	flag.StringVar  (&filename,      "filename",      "shaders/seascape.glsl",    "path to GLSL file")
+	flag.IntVar     (&width,         "width",         1024,                       "Width of the OpenGL Window")
+	flag.IntVar     (&height,        "height",        768,                        "Height of the OpenGL Window")
+	var tmp float64
+	flag.Float64Var (&tmp,           "drift",         0.01,                       "Speed of the gradual camera drift")
+	flag.BoolVar    (&race,          "race",          race,                       "Use race detector")
+
+	// this parses the arguements
+	flag.Parse()
+
+	uDrift = float32(tmp)
+	log.Println("width=",width)
+	log.Println("height=",height)
+	log.Println("uDrift=",uDrift)
+
+}
+
 func main() {
+	parseFlags()
+
 	pixelgl.Run(run)
 }
