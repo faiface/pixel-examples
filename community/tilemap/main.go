@@ -16,7 +16,6 @@ import (
 
 var clearColor = colornames.Skyblue
 
-var tilemap *tmx.Map
 var sprites []*pixel.Sprite
 
 func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
@@ -117,7 +116,7 @@ func run() {
 	panicIfErr(err)
 
 	// Initialize art assets (i.e. the tilemap)
-	tilemap, err = tmx.ReadFile("gameart2d-desert.tmx")
+	tilemap, err := tmx.ReadFile("gameart2d-desert.tmx")
 	panicIfErr(err)
 
 	fmt.Println("use WASD to move camera around")
