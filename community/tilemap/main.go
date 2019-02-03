@@ -1,12 +1,11 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
+	"fmt"
 	"image/png"
-	"io"
-	"io/ioutil"
+	"math"
 	"os"
+	"time"
 
 	"golang.org/x/image/colornames"
 
@@ -20,43 +19,90 @@ var clearColor = colornames.Skyblue
 var tilemap *tmx.Map
 var sprites []*pixel.Sprite
 
-// Tile maps a tilemap coordinate to be drawn at `GamePos`
-type Tile struct {
-	MapPos  pixel.Vec `json:"mapPos"`
-	GamePos pixel.Vec `json:"gamePos"`
-}
+func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
+	// Load the sprites
+	sprites := make(map[string]*pixel.Sprite)
+	for _, tileset := range tilemap.Tilesets {
+		if _, alreadyLoaded := sprites[tileset.Image.Source]; !alreadyLoaded {
+			sprites[tileset.Image.Source] = loadSprite(tileset.Image.Source)
+		}
+	}
 
-// Level represents a single game scene composed of tiles
-//   - Tiles []*tile
-type Level struct {
-	Name  string  `json:"name"`
-	Tiles []*Tile `json:"tiles"`
-}
+	var (
+		camPos       = pixel.ZV
+		camSpeed     = 1000.0
+		camZoom      = 0.2
+		camZoomSpeed = 1.2
+	)
 
-func gameloop(win *pixelgl.Window, level *Level) {
-	tm := tilemap.Tilesets[0]
-	w := float64(tm.TileWidth)
-	h := float64(tm.TileHeight)
-	sprite := loadSprite(tm.Image.Source)
-
-	var iX, iY float64
-	var fX = float64(tm.TileWidth)
-	var fY = float64(tm.TileHeight)
-
+	last := time.Now()
 	for !win.Closed() {
+		dt := time.Since(last).Seconds()
+		last = time.Now()
+
+		// Camera movement
+		cam := pixel.IM.Scaled(camPos, camZoom).Moved(win.Bounds().Center().Sub(camPos))
+		win.SetMatrix(cam)
+		if win.Pressed(pixelgl.KeyLeft) {
+			camPos.X -= camSpeed * dt
+		}
+		if win.Pressed(pixelgl.KeyRight) {
+			camPos.X += camSpeed * dt
+		}
+		if win.Pressed(pixelgl.KeyDown) {
+			camPos.Y -= camSpeed * dt
+		}
+		if win.Pressed(pixelgl.KeyUp) {
+			camPos.Y += camSpeed * dt
+		}
+		camZoom *= math.Pow(camZoomSpeed, win.MouseScroll().Y)
+
 		win.Clear(clearColor)
 
-		for _, coord := range level.Tiles {
-			iX = coord.MapPos.X * w
-			fX = iX + w
-			iY = coord.MapPos.Y * h
-			fY = iY + h
-			sprite.Set(sprite.Picture(), pixel.R(iX, iY, fX, fY))
-			pos := coord.GamePos.ScaledXY(pixel.V(w, h))
-			sprite.Draw(win, pixel.IM.Moved(pos.Add(pixel.V(0, h))))
+		// Draw tiles
+		for _, layer := range tilemap.Layers {
+			for tileIndex, tile := range layer.DecodedTiles {
+				ts := layer.Tileset
+				tID := int(tile.ID)
+
+				if tID == 0 {
+					// Tile ID 0 means blank, skip it.
+					continue
+				}
+
+				// Calculate the framing for the tile within its tileset's source image
+				numRows := ts.Tilecount / ts.Columns
+				x, y := tileIDToCoord(tID, ts.Columns, numRows)
+				gamePos := indexToGamePos(tileIndex, tilemap.Width, tilemap.Height)
+
+				iX := float64(x) * float64(ts.TileWidth)
+				fX := iX + float64(ts.TileWidth)
+				iY := float64(y) * float64(ts.TileHeight)
+				fY := iY + float64(ts.TileHeight)
+
+				sprite := sprites[ts.Image.Source]
+				sprite.Set(sprite.Picture(), pixel.R(iX, iY, fX, fY))
+				pos := gamePos.ScaledXY(pixel.V(float64(ts.TileWidth), float64(ts.TileHeight)))
+				sprite.Draw(win, pixel.IM.Moved(pos))
+			}
 		}
+
 		win.Update()
 	}
+}
+
+func tileIDToCoord(tID int, numColumns int, numRows int) (x int, y int) {
+	x = tID % numColumns
+	y = numRows - (tID / numColumns) - 1
+	return
+}
+
+func indexToGamePos(idx int, width int, height int) pixel.Vec {
+	gamePos := pixel.V(
+		float64(idx%width)-1,
+		float64(height)-float64(idx/width),
+	)
+	return gamePos
 }
 
 func run() {
@@ -74,11 +120,8 @@ func run() {
 	tilemap, err = tmx.ReadFile("gameart2d-desert.tmx")
 	panicIfErr(err)
 
-	// Load the level from file
-	level, err := ParseLevelFile("level.json")
-	panicIfErr(err)
-
-	gameloop(win, level)
+	fmt.Println("use WASD to move camera around")
+	gameloop(win, tilemap)
 }
 
 func loadSprite(path string) *pixel.Sprite {
@@ -90,43 +133,6 @@ func loadSprite(path string) *pixel.Sprite {
 
 	pd := pixel.PictureDataFromImage(img)
 	return pixel.NewSprite(pd, pd.Bounds())
-}
-
-// ParseLevelFile reads a file from the disk at `path`
-// and unmarshals it to a `*Level`
-func ParseLevelFile(path string) (*Level, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	bytes, err := ioutil.ReadAll(f)
-	if err != nil {
-		return nil, err
-	}
-
-	var newLevel Level
-	json.Unmarshal(bytes, &newLevel)
-	return &newLevel, nil
-}
-
-// Save serializes a level to a JSON data file
-func (level *Level) Save(path string) error {
-	f, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	b, err := json.MarshalIndent(level, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	r := bytes.NewReader(b)
-	_, err = io.Copy(f, r)
-	return err
 }
 
 func main() {
