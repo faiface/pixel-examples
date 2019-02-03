@@ -95,6 +95,9 @@ func run() {
 	// initialize batch
 	batch := pixel.NewBatch(&pixel.TrianglesData{}, atlas.Picture())
 
+	// initialize text placeholder
+	num := text.New(pixel.ZV, atlas)
+
 	// setup game
 	for i := 0; i < 9; i++ {
 		for j := 0; j < 9; j++ {
@@ -185,7 +188,7 @@ func run() {
 		for a, sa := range board {
 			for b, sb := range sa {
 				if sb != 0 {
-					num := text.New(pixel.ZV, atlas)
+					num.Clear()
 					num.WriteString(strconv.Itoa(sb))
 					num.DrawColorMask(batch,
 						pixel.IM.
