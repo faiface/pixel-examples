@@ -61,6 +61,10 @@ func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
 		win.Clear(clearColor)
 
 		// Draw tiles
+		for _, batch := range batches {
+			batch.Clear()
+		}
+
 		for _, layer := range tilemap.Layers {
 			for tileIndex, tile := range layer.DecodedTiles {
 				ts := layer.Tileset
