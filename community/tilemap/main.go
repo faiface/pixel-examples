@@ -16,14 +16,16 @@ import (
 
 var clearColor = colornames.Skyblue
 
-var sprites []*pixel.Sprite
-
 func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
+	batches := make(map[string]*pixel.Batch)
+
 	// Load the sprites
 	sprites := make(map[string]*pixel.Sprite)
 	for _, tileset := range tilemap.Tilesets {
 		if _, alreadyLoaded := sprites[tileset.Image.Source]; !alreadyLoaded {
-			sprites[tileset.Image.Source] = loadSprite(tileset.Image.Source)
+			sprite, pictureData := loadSprite(tileset.Image.Source)
+			sprites[tileset.Image.Source] = sprite
+			batches[tileset.Image.Source] = pixel.NewBatch(&pixel.TrianglesData{}, pictureData)
 		}
 	}
 
@@ -82,10 +84,13 @@ func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
 				sprite := sprites[ts.Image.Source]
 				sprite.Set(sprite.Picture(), pixel.R(iX, iY, fX, fY))
 				pos := gamePos.ScaledXY(pixel.V(float64(ts.TileWidth), float64(ts.TileHeight)))
-				sprite.Draw(win, pixel.IM.Moved(pos))
+				sprite.Draw(batches[ts.Image.Source], pixel.IM.Moved(pos))
 			}
 		}
 
+		for _, batch := range batches {
+			batch.Draw(win)
+		}
 		win.Update()
 	}
 }
@@ -123,7 +128,7 @@ func run() {
 	gameloop(win, tilemap)
 }
 
-func loadSprite(path string) *pixel.Sprite {
+func loadSprite(path string) (*pixel.Sprite, *pixel.PictureData) {
 	f, err := os.Open(path)
 	panicIfErr(err)
 
@@ -131,7 +136,7 @@ func loadSprite(path string) *pixel.Sprite {
 	panicIfErr(err)
 
 	pd := pixel.PictureDataFromImage(img)
-	return pixel.NewSprite(pd, pd.Bounds())
+	return pixel.NewSprite(pd, pd.Bounds()), pd
 }
 
 func main() {
