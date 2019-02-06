@@ -17,7 +17,9 @@ import (
 var clearColor = colornames.Skyblue
 
 func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
-	batches := make(map[string]*pixel.Batch)
+	batches := make([]*pixel.Batch, 0)
+	batchIndices := make(map[string]int)
+	batchCounter := 0
 
 	// Load the sprites
 	sprites := make(map[string]*pixel.Sprite)
@@ -25,7 +27,9 @@ func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
 		if _, alreadyLoaded := sprites[tileset.Image.Source]; !alreadyLoaded {
 			sprite, pictureData := loadSprite(tileset.Image.Source)
 			sprites[tileset.Image.Source] = sprite
-			batches[tileset.Image.Source] = pixel.NewBatch(&pixel.TrianglesData{}, pictureData)
+			batches = append(batches, pixel.NewBatch(&pixel.TrianglesData{}, pictureData))
+			batchIndices[tileset.Image.Source] = batchCounter
+			batchCounter++
 		}
 	}
 
@@ -88,7 +92,7 @@ func gameloop(win *pixelgl.Window, tilemap *tmx.Map) {
 				sprite := sprites[ts.Image.Source]
 				sprite.Set(sprite.Picture(), pixel.R(iX, iY, fX, fY))
 				pos := gamePos.ScaledXY(pixel.V(float64(ts.TileWidth), float64(ts.TileHeight)))
-				sprite.Draw(batches[ts.Image.Source], pixel.IM.Moved(pos))
+				sprite.Draw(batches[batchIndices[ts.Image.Source]], pixel.IM.Moved(pos))
 			}
 		}
 
