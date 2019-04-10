@@ -8,11 +8,7 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 )
 
-const (
-	modeR = iota
-	modeL
-)
-
+// These hold the state of whether we're placing the first or second point of the line.
 const (
 	clickLineA = iota
 	clickLineB
@@ -24,7 +20,6 @@ var (
 	r = pixel.R(10, 10, 70, 50)
 	l = pixel.L(pixel.V(20, 20), pixel.V(100, 30))
 
-	mode      = modeR
 	clickLine = clickLineA
 )
 
@@ -43,47 +38,42 @@ func run() {
 	imd := imdraw.New(nil)
 
 	for !win.Closed() {
-		if mode == modeR {
-			win.Clear(color.RGBA{R: 23, G: 39, B: 58, A: 125})
-		} else {
-			win.Clear(color.RGBA{R: 21, G: 55, B: 18, A: 125})
-		}
+		win.Clear(color.RGBA{R: 23, G: 39, B: 58, A: 125})
 		imd.Clear()
 
-		if win.JustPressed(pixelgl.KeyR) {
-			mode = modeR
-		}
-		if win.JustPressed(pixelgl.KeyL) {
-			mode = modeL
-			clickLine = clickLineA
-		}
-
+		// When mouse left-click, move the rectangle so its' center is at the mouse position
 		if win.JustPressed(pixelgl.MouseButtonLeft) {
-			if mode == modeR {
-				rectToMouse := r.Center().To(win.MousePosition())
-				r = r.Moved(rectToMouse)
-			}
+			rectToMouse := r.Center().To(win.MousePosition())
+			r = r.Moved(rectToMouse)
+		}
 
-			if mode == modeL {
-				if clickLine == clickLineA {
-					l = pixel.L(win.MousePosition(), win.MousePosition().Add(pixel.V(1, 1)))
-					clickLine = clickLineB
-				} else {
-					l = pixel.L(l.A, win.MousePosition())
-					clickLine = clickLineA
-				}
+		// When mouse right-click, set either the beginning or end of the line.
+		if win.JustPressed(pixelgl.MouseButtonRight) {
+			if clickLine == clickLineA {
+				// Set the beginning of the line to the mouse position.
+				// To make it clearer to the user, set the end position 1 pixel (in each direction) away from the first
+				// point.
+				l = pixel.L(win.MousePosition(), win.MousePosition().Add(pixel.V(1, 1)))
+				clickLine = clickLineB
+			} else {
+				// Set the end point of the line.
+				l = pixel.L(l.A, win.MousePosition())
+				clickLine = clickLineA
 			}
 		}
 
+		// Draw the rectangle.
 		imd.Color = color.Black
 		imd.Push(r.Min, r.Max)
 		imd.Rectangle(3)
 
+		// Draw the line.
 		imd.Color = color.RGBA{R: 10, G: 10, B: 250, A: 255}
 		imd.Push(l.A, l.B)
 		imd.Line(3)
 
 		imd.Color = color.RGBA{R: 250, G: 10, B: 10, A: 255}
+		// Draw any intersection points.
 		for _, i := range r.IntersectionPoints(l) {
 			imd.Push(i)
 			imd.Circle(4, 0)
