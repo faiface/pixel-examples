@@ -1,6 +1,8 @@
 # Line Collisions
 Line collisions is a basic example of how to detect line collisions with a rectangle.
 
+![Screenshot](lineCollisionScreenshot.png)
+
 ## Instructions
 You can set the rectangle position using a left-click of the mouse.
 
