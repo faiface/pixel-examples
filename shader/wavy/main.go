@@ -67,6 +67,7 @@ func main() {
 var fragmentShader = `
 #version 330 core
 
+in vec2 vTexCoords;
 out vec4 fragColor;
 
 uniform sampler2D uTexture;
@@ -77,7 +78,7 @@ uniform float uSpeed;
 uniform float uTime;
 
 void main() {
-    vec2 t = gl_FragCoord.xy / uTexBounds.zw;
+    vec2 t = vTexCoords / uTexBounds.zw;
 	vec3 influence = texture(uTexture, t).rgb;
 
     if (influence.r + influence.g + influence.b > 0.3) {
