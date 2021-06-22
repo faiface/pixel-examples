@@ -2,7 +2,7 @@
 
 This repository contains a few examples demonstrating [Pixel](https://github.com/faiface/pixel)'s functionality.
 
-**To run an example**, navigate to it's directory, then `go run` the `main.go` file. For example:
+**To run an example**, navigate to its directory, then `go run` the `main.go` file. For example:
 
 ```
 $ cd platformer
