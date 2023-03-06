@@ -13,5 +13,5 @@ require (
 	github.com/pkg/profile v1.5.0
 	github.com/salviati/go-tmx v0.0.0-20180901011116-8dae25beffeb
 	github.com/sqweek/dialog v0.0.0-20200911184034-8a3d98e8211d
-	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb
+	golang.org/x/image v0.5.0
 )
